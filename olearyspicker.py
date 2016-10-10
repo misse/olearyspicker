@@ -15,6 +15,7 @@ Options:
     -v, --verbose       There is no verbose :(
 """
 
+from __future__ import print_function, unicode_literals
 import json
 import random
 import requests
@@ -39,12 +40,11 @@ def banner(*text):
     for i, row in enumerate(text):
         print('{char} {text} {char}'.format(
             char='*',
-            text=row.ljust(longest).encode('utf-8')))
+            text=row.ljust(longest)))
     print(frame)
 
 
 def main(args):
-
     r = requests.get("http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2&point={longitude},{latitude}&dist={distance}".format(**args))
 
     restaurants = []

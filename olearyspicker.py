@@ -16,6 +16,17 @@ class restaurant(object):
         self.url = url
 
 
+def banner(*text):
+    longest = len(max(text, key=len))
+    frame = '*' * (longest + 4)
+    print(frame)
+    for i, row in enumerate(text):
+        print('{char} {text} {char}'.format(
+            char='*',
+            text=row.ljust(longest).encode('utf-8')))
+    print(frame)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Find and randomize nearby O'learys restaurants. Stockholm central coordinates is 18.0686,59.3293. Gothenburg central is 11.9746,57.7089, I hate argparse formatting"
@@ -50,14 +61,11 @@ def main():
         for line in json.loads(r.text)['results']:
             restaurants.append(restaurant(line['title'], line['short_title'], line['slug'], line['address'], line['distance'], line['phone'], line['url']))
 
-        rand_rest = restaurants[random.randrange(len(restaurants))]
+        rest = restaurants[random.randrange(len(restaurants))]
+        banner(rest.title, rest.address, rest.phone)
 
-        print(rand_rest.title)
-        print(rand_rest.address)
-        print(rand_rest.phone)
     else:
-        print("No restaurants found within that range and coordinates")
-        print(args)
+        banner("No restaurants found within that range and coordinates")
 
 
 if __name__ == "__main__":

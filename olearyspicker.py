@@ -2,6 +2,7 @@
 import json
 import random
 import requests
+import argparse
 
 
 class restaurant(object):
@@ -16,14 +17,24 @@ class restaurant(object):
 
 
 def main():
-    distance = "4000"
-    point = "18.0388702%2C59.3213309"
-    r = requests.get("http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2&point={point}&dist={dist}".format(point=point, dist=distance))
-
+    argparser = argparse.ArgumentParser(description="O'learys Picker")
+    argparser.add_argument('--longitude', action='store', default='18.0388702')
+    argparser.add_argument('--latitude', action='store', default='59.3213309')
+    argparser.add_argument('--range', action='store', default='4000')
+    args = argparser.parse_args()
+    
+    distance = args.range
+    point = "{lon}%2C{lat}".format(lon=args.longitude, lat=args.latitude)
+    api = "http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2"
+    endpoint = "{api}&point={point}&dist={dist}".format(
+        api=api, point=point, dist=distance)
+    r = requests.get(endpoint)
+    
     restaurants = []
-
     for line in json.loads(r.text)['results']:
-        restaurants.append(restaurant(line['title'], line['short_title'], line['slug'], line['address'], line['distance'], line['phone'], line['url']))
+        restaurants.append(restaurant(
+            line['title'], line['short_title'], line['slug'], line['address'],
+            line['distance'], line['phone'], line['url']))
 
     rand_rest = restaurants[random.randrange(len(restaurants))]
 

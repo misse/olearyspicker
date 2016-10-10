@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from urllib2 import Request, urlopen, URLError
 import json
 import random
+import requests
+
 
 class restaurant(object):
     def __init__(self, title, short_title, slug, address, distance, phone, url):
@@ -13,21 +14,23 @@ class restaurant(object):
         self.phone = phone
         self.url = url
 
-distance = "4000"
-point = "18.0388702%2C59.3213309"
-url = "http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2&point={0}&dist={1}".format(point, distance)
-request = Request(url)
 
-response = urlopen(request)
+def main():
+    distance = "4000"
+    point = "18.0388702%2C59.3213309"
+    r = requests.get("http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2&point={point}&dist={dist}".format(point=point, dist=distance))
 
-restaurants = []
+    restaurants = []
 
-data = json.loads(response.read())
-for line in data['results']:
-    restaurants.append(restaurant(line['title'], line['short_title'], line['slug'], line['address'], line['distance'],line['phone'], line['url']))
+    for line in json.loads(r.text)['results']:
+        restaurants.append(restaurant(line['title'], line['short_title'], line['slug'], line['address'], line['distance'], line['phone'], line['url']))
 
-rand_rest = restaurants[random.randrange(len(restaurants))]
+    rand_rest = restaurants[random.randrange(len(restaurants))]
 
-#print rand_rest.title
-print rand_rest.address
-print rand_rest.phone
+    print rand_rest.title
+    print rand_rest.address
+    print rand_rest.phone
+
+
+if __name__ == "__main__":
+    main()

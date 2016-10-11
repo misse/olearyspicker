@@ -4,9 +4,10 @@ O'learys establishment in the set radius of a set location.
 
 ## Installation
 
-1. Clone the repo
-1. pip install requests
-1. python olearyspicker.py 
+1. `git clone https://github.com/misse/olearyspicker.git`
+1. ` cd olearyspicker`
+1. `pip install -r requirements.txt`
+1. `python olearyspicker.py`
 
 ## Usage
 ```

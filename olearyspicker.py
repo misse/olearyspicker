@@ -23,7 +23,8 @@ from docopt import docopt
 
 
 class restaurant(object):
-    def __init__(self, title, short_title, slug, address, distance, phone, url):
+    def __init__(self, title, short_title, slug,
+                 address, distance, phone, url):
         self.title = title
         self.short_title = short_title
         self.slug = slug
@@ -45,14 +46,19 @@ def banner(*text):
 
 
 def main(args):
-    r = requests.get("http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2&point={longitude},{latitude}&dist={distance}".format(**args))
+    api = "http://olearys.se/api/v1/restaurants/?language_code=sv-se&site_id=2"
+    r = requests.get(
+        "{api}&point={longitude},{latitude}&dist={distance}".format(api=api,
+                                                                    **args))
 
     restaurants = []
 
     data = json.loads(r.text)
     if data['count'] >= 1:
         for line in json.loads(r.text)['results']:
-            restaurants.append(restaurant(line['title'], line['short_title'], line['slug'], line['address'], line['distance'], line['phone'], line['url']))
+            restaurants.append(restaurant(
+                line['title'], line['short_title'], line['slug'],
+                line['address'], line['distance'], line['phone'], line['url']))
 
         rest = restaurants[random.randrange(len(restaurants))]
         banner(rest.title, rest.address, rest.phone)
